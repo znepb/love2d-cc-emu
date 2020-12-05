@@ -1,5 +1,6 @@
 local fs = {}
 local plpath = require("pl.path")
+local love = _G.love
 
 local function evalPath(path)
     if path:find("^/") then

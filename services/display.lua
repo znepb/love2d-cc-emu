@@ -1,8 +1,8 @@
-local termSvc = {}
+local displaySvc = {}
+local termUpdateChannel = love.thread.newChannel("term_update")
 
-termSvc.run = function(blit, termUpdateChannel)
+displaySvc.run = function(blit)
     local msg = termUpdateChannel:pop()
-    
 
     --[[
         Term Update Format:
@@ -133,4 +133,4 @@ termSvc.run = function(blit, termUpdateChannel)
     end
 end
 
-return termSvc
+return displaySvc

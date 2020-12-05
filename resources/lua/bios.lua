@@ -5,6 +5,10 @@
 -- has not been defined at this point.
 local expect
 
+_G.error = function(err)
+    log(err)
+end
+
 do
     local h = fs.open("rom/modules/main/cc/expect.lua", "r")
     local f, err = loadstring(h.readAll(), "@expect.lua")
@@ -537,6 +541,7 @@ function os.run(_tEnv, _sPath, ...)
     if fnFile then
         local ok, err = pcall(fnFile, ...)
         if not ok then
+            log(err)
             if err and err ~= "" then
                 printError(err)
             end
@@ -1023,10 +1028,13 @@ local ok, err = pcall(parallel.waitForAny,
     rednet.run
 )
 
+log("BIOS ERROR: ", ok, err)
+
 -- If the shell errored, let the user read it.
 term.redirect(term.native())
 if not ok then
     printError(err)
+    
     pcall(function()
         term.setCursorBlink(false)
         print("Press any key to continue")

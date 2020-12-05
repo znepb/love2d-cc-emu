@@ -2,6 +2,9 @@ local cX, cY = 1, 1
 local textColor = 1
 local backgroundColor = 32768
 local term = {}
+local love = _G.love
+local termSize = _G.termSize
+local termUpdateChannel = love.thread.newChannel("term_update")
 
 local colorToChar = {
     "0",
@@ -68,7 +71,7 @@ term.setCursorPos = function(x, y)
 end
 
 term.getSize = function()
-    return tX, tY
+    return termSize.x, termSize.y
 end
 
 term.getCursorPos = function()

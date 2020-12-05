@@ -3,9 +3,6 @@
 -- @see colors
 -- @module colours
 
-for i, v in pairs(_G) do
-	log(i, v)
-end
 local colours = _ENV
 for k, v in pairs(colors) do
 	colours[k] = v
