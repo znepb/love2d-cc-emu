@@ -1,7 +1,6 @@
 local displaySvc = {}
-local termUpdateChannel = love.thread.newChannel("term_update")
 
-displaySvc.run = function(blit)
+displaySvc.run = function(blit, termUpdateChannel)
     local msg = termUpdateChannel:pop()
 
     --[[
@@ -28,23 +27,24 @@ displaySvc.run = function(blit)
         print("msg")
         print(msg.type)
         if msg.type == "clear" then
-            for i = 1, tY do
+            for i = 1, termSize.y do
                 blit[i] = {
-                    string.rep(" ", tX),
-                    string.rep(msg.fgColor, tX),
-                    string.rep(msg.bgColor, tX)
+                    string.rep(" ", termSize.x),
+                    string.rep(msg.fgColor, termSize.x),
+                    string.rep(msg.bgColor, termSize.x)
                 }
                 print(blit[i][3])
             end
             print("update: clear")
         elseif msg.type == "clearLine" then
             blit[msg.y] = {
-                string.rep(" ", tX),
-                string.rep(msg.fgColor, tX),
-                string.rep(msg.bgColor, tX)
+                string.rep(" ", termSize.x),
+                string.rep(msg.fgColor, termSize.x),
+                string.rep(msg.bgColor, termSize.x)
             }
         elseif msg.type == "blit" then
-            if msg.x <= tX then
+            print("blit")
+            if msg.x <= termSize.x then
                 
                 --[[
                     step 1: get the text, bg, and fg colors for the row, and other info for the text
@@ -63,11 +63,11 @@ displaySvc.run = function(blit)
                 
 
                 -- step 2
-                if textLen + msg.x > tX then
+                if textLen + msg.x > termSize.x then
                     -- sub the text down to a point where it can fit in the row
-                    text = text:sub(1, tX - msg.x)
-                    fg = text:sub(1, tX - msg.x)
-                    bg = text:sub(1, tX - msg.x)
+                    text = text:sub(1, termSize.x - msg.x)
+                    fg = text:sub(1, termSize.x - msg.x)
+                    bg = text:sub(1, termSize.x - msg.x)
                     textLen = #msg.text
 
                     --[[
@@ -104,10 +104,10 @@ displaySvc.run = function(blit)
                     bgPre = bg:sub(1, msg.x)
                     fgPre = fg:sub(1, msg.x)
                 end
-                if #msg.text + msg.x < tX then
-                    textPost = text:sub(msg.x + #msg.text, tX)
-                    bgPost = bg:sub(msg.x + #msg.text, tX)
-                    fgPost = fg:sub(msg.x + #msg.text, tX)
+                if #msg.text + msg.x < termSize.x then
+                    textPost = text:sub(msg.x + #msg.text, termSize.x)
+                    bgPost = bg:sub(msg.x + #msg.text, termSize.x)
+                    fgPost = fg:sub(msg.x + #msg.text, termSize.x)
                 end
 
                 -- step 4!
@@ -123,7 +123,7 @@ displaySvc.run = function(blit)
                 if i ~= 1 then
                     blit[i - 1] = v
                 end
-                blit[tY] = {
+                blit[termSize.y] = {
                     string.rep(" ", 51),
                     string.rep(msg.fgColor, 51),
                     string.rep(msg.bgColor, 51)
@@ -131,6 +131,10 @@ displaySvc.run = function(blit)
             end
         end
     end
+end
+
+displaySvc.setTermSize = function(tbl)
+    termSize = tbl  
 end
 
 return displaySvc

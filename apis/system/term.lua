@@ -4,7 +4,7 @@ local backgroundColor = 32768
 local term = {}
 local love = _G.love
 local termSize = _G.termSize
-local termUpdateChannel = love.thread.newChannel("term_update")
+local termUpdateChannel
 
 local colorToChar = {
     "0",
@@ -83,7 +83,7 @@ term.clear = function()
         type = "clear",
         bgColor = colorToChar[backgroundColor],
         fgColor = colorToChar[textColor]
-    })
+    }) 
 end
 
 term.scroll = function()
@@ -97,5 +97,12 @@ end
 -- term.isColor will always return true, because (currently) the terminal is always advanced.
 term.isColor = function() return true end
 term.isColour = term.isColor
+
+term.setTermUpdateChannel = function(channel)
+    print("channel set")
+    termUpdateChannel = channel
+    term.setTermUpdateChannel = nil
+end
+    
 
 return term

@@ -1,5 +1,6 @@
 local scale = 2
 local love = _G.love
+local termUpdateChannel = love.thread.newChannel("term_update")
 
 -- Global variables
 _G.termSize = {x = 51, y = 19}
@@ -15,6 +16,8 @@ local display = require("apis.internal.display")
 local displaySvc = require("services.display")
 local osSvc = require("services.os")
 
+displaySvc.setTermSize(termSize)
+
 -- Paths
 local appdata = love.filesystem.getSaveDirectory()
 local computerPath = appdata .. "/computer/0"
@@ -25,7 +28,7 @@ local tW, tH = (termSize.x * 6) * scale + 8, (termSize.y * 9) * scale + 8
 local thread
 
 local function start()
-    thread = love.thread.newThread( "resources/computerThread.lua" )
+    thread = love.thread.newThread( "threads/computerThread.lua" )
     thread:start(termSize, termUpdateChannel)
 end
 
